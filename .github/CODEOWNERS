@@ -1,0 +1,22 @@
+# Loqa Skills - Code Owners
+
+# Global ownership
+* @annabarnes1138
+
+# Individual skills - skill maintainers can be added here
+# Example: /home-assistant-skill/ @annabarnes1138 @skill-maintainer
+
+# Skill framework and templates
+/framework/ @annabarnes1138
+/templates/ @annabarnes1138
+
+# CI/CD and automation
+/.github/ @annabarnes1138
+
+# Documentation
+*.md @annabarnes1138
+SKILLS.md @annabarnes1138
+
+# Skill manifests require core team review
+skill.yml @annabarnes1138
+*/skill.yml @annabarnes1138
