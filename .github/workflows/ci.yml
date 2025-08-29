@@ -159,7 +159,7 @@ jobs:
         done
 
     - name: Upload skills documentation
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: skills-documentation
         path: SKILLS.md
