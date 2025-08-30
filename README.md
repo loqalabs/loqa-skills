@@ -1,5 +1,7 @@
 # 🧩 Loqa Skills
 
+[![CI/CD Pipeline](https://github.com/loqalabs/loqa-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/loqalabs/loqa-skills/actions/workflows/ci.yml)
+
 Official and sample skills packaged as external services for the Loqa platform.
 
 ## Overview
