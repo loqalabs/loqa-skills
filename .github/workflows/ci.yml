@@ -55,9 +55,13 @@ jobs:
 
     - name: Set up Go (if Go skill)
       if: hashFiles(format('{0}/go.mod', matrix.skill)) != ''
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
-        go-version: '1.24'
+        go-version: '1.24.3'
+
+    - name: Verify Go version (if Go skill)
+      if: hashFiles(format('{0}/go.mod', matrix.skill)) != ''
+      run: go version
 
     - name: Test Go skill
       if: hashFiles(format('{0}/go.mod', matrix.skill)) != ''
@@ -175,3 +179,30 @@ jobs:
       run: |
         echo "No skills found in repository yet."
         echo "Skills will be automatically tested and built when added."
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results
+      if: always()
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: 'trivy-results.sarif'
