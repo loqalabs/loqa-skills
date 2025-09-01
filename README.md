@@ -7,15 +7,16 @@
 
 [![CI/CD Pipeline](https://github.com/loqalabs/loqa-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/loqalabs/loqa-skills/actions/workflows/ci.yml)
 
-Official and sample skills packaged as external services for the Loqa platform.
+Modular skill plugin system for the Loqa voice assistant platform.
 
 ## Overview
 
-Loqa Skills provides:
-- Official skill implementations (Home Assistant, media control, etc.)
-- Sample skills for developers
-- Skill development framework and templates
-- Testing and deployment tools
+Loqa Skills implements a comprehensive plugin architecture introduced in Milestone 4a, providing:
+- **Plugin Architecture**: Manifest-driven skill system with lifecycle hooks
+- **Security Model**: Trust levels and sandboxing for safe skill execution  
+- **Development Tools**: CLI tools and web UI for skill management
+- **Official Skills**: Curated skills for common use cases
+- **Sample Skills**: Examples and templates for developers
 
 ## Available Skills
 
@@ -26,32 +27,62 @@ Loqa Skills provides:
 - **Weather**: Local weather information and forecasts
 
 ### Sample Skills
-- **Hello World**: Basic skill template
-- **Device Control**: Simple device command examples
-- **Custom Commands**: Advanced skill development patterns
+- **Example Skill**: Comprehensive skill template demonstrating all features
 
 ## Features
 
+### 🆕 Milestone 4a: Modular Plugin Architecture
+
+- 🧩 **SkillPlugin Interface**: Comprehensive lifecycle hooks (Initialize, Teardown, CanHandle, HandleIntent)
+- 📋 **Skill Manifests**: JSON-based configuration with permissions, intents, and metadata
+- 🔄 **Dynamic Loading**: Runtime skill loading, unloading, and reloading
+- 🛡️ **Security Model**: Trust levels (system, verified, community, unknown) and sandbox modes
+- 🎛️ **Management Tools**: CLI tool and web UI for skill administration
+- 🌐 **REST API**: Complete skill management via `/api/skills` endpoints
+- 🔧 **Multi-Format Support**: Go plugins, process-based skills, future WASM support
+
+### Core Capabilities
+
 - 🏠 **Smart Home Integration**: Ready-to-use Home Assistant connectivity
-- 🎵 **Media Control**: Music and audio playback management
+- 🎵 **Media Control**: Music and audio playbook management
 - ⏰ **Productivity**: Timers, reminders, and task management
 - 🛠️ **Development Framework**: Tools and templates for custom skills
 - 📦 **Easy Deployment**: Containerized skills with Docker support
 
 ## Skill Development
 
-Each skill is an independent service that:
-- Subscribes to relevant NATS subjects
-- Processes voice commands and intents
-- Executes actions (API calls, device control, etc.)
-- Reports status and responses
+### Skill Manifest (`skill.json`)
+
+Each skill requires a manifest file defining:
+- **Basic Info**: ID, name, version, author, license
+- **Intent Patterns**: Voice commands the skill handles with examples
+- **Permissions**: Required system access (microphone, network, etc.)
+- **Configuration**: Schema for user-configurable settings
+- **Security**: Trust level and sandbox mode requirements
+
+### SkillPlugin Interface
+
+Skills implement the following lifecycle:
+- `Initialize(ctx, config)` - Setup with configuration
+- `CanHandle(intent)` - Determine if skill handles the intent
+- `HandleIntent(ctx, request)` - Process the voice command
+- `GetManifest()` - Return skill metadata
+- `UpdateConfig(ctx, config)` - Handle configuration changes
+- `Teardown(ctx)` - Clean shutdown
+
+### Skill Types
+
+- **Go Plugins**: Compiled `.so` files loaded dynamically
+- **Process Skills**: Executable binaries run as separate processes
+- **WASM Skills**: WebAssembly modules (future)
 
 ## Architecture
 
-Skills communicate with the Loqa ecosystem via:
-- NATS message bus for commands and events
-- gRPC for high-performance data exchange
-- REST APIs for external service integration
+The plugin system provides:
+- **Dynamic Loading**: Skills loaded/unloaded at runtime via CLI or web UI
+- **Sandboxing**: Process isolation and permission enforcement
+- **Intent Routing**: Automatic routing based on confidence and priority
+- **Error Handling**: Graceful fallback and recovery
 
 ## Getting Started
 
