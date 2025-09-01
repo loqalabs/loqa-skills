@@ -1,0 +1,103 @@
+{
+  "id": "com.loqalabs.homeassistant",
+  "name": "Home Assistant Voice Integration",
+  "version": "1.0.0",
+  "description": "Integrates with Home Assistant Voice Preview Edition as a fallback skill for smart home control",
+  "author": "Loqa Labs",
+  "license": "AGPL-3.0",
+  "homepage": "https://github.com/loqalabs/loqa-skills",
+  "repository": "https://github.com/loqalabs/loqa-skills.git",
+  "intent_patterns": [
+    {
+      "name": "ha_fallback",
+      "examples": [
+        "turn on the lights",
+        "what's the temperature",
+        "lock the front door", 
+        "set the thermostat to 72",
+        "play music in the living room",
+        "turn off all the lights",
+        "check if the garage door is open",
+        "set a timer for 10 minutes"
+      ],
+      "min_confidence": 0.1,
+      "priority": 100,
+      "enabled": true,
+      "categories": ["smart_home", "fallback"],
+      "languages": ["en"]
+    }
+  ],
+  "languages": ["en"],
+  "categories": ["smart_home", "fallback", "integration"],
+  "permissions": [
+    {
+      "type": "network",
+      "resource": "*",
+      "actions": ["http_request"],
+      "description": "Connect to Home Assistant API"
+    },
+    {
+      "type": "device_control",
+      "resource": "*", 
+      "actions": ["*"],
+      "description": "Control devices via Home Assistant"
+    },
+    {
+      "type": "speaker",
+      "resource": "*",
+      "actions": ["play"],
+      "description": "Play TTS responses from Home Assistant"
+    }
+  ],
+  "dependencies": [],
+  "min_loqa_version": "0.1.0",
+  "config_schema": {
+    "properties": {
+      "base_url": {
+        "type": "string",
+        "description": "Home Assistant base URL (e.g., http://homeassistant.local:8123)",
+        "default": "http://homeassistant.local:8123",
+        "format": "url"
+      },
+      "access_token": {
+        "type": "string",
+        "description": "Home Assistant long-lived access token",
+        "sensitive": true
+      },
+      "device_id": {
+        "type": "string",
+        "description": "Device ID to use when communicating with HA",
+        "default": "loqa-voice-assistant"
+      },
+      "device_name": {
+        "type": "string", 
+        "description": "Device name displayed in Home Assistant",
+        "default": "Loqa Voice Assistant"
+      },
+      "mqtt_enabled": {
+        "type": "boolean",
+        "description": "Enable MQTT integration (future feature)",
+        "default": false
+      },
+      "mqtt_topic": {
+        "type": "string",
+        "description": "MQTT topic for voice commands", 
+        "default": "homeassistant/voice"
+      },
+      "timeout_seconds": {
+        "type": "number",
+        "description": "Request timeout in seconds",
+        "default": 30,
+        "format": "float"
+      }
+    },
+    "required": ["base_url", "access_token"]
+  },
+  "load_on_startup": true,
+  "singleton": true,
+  "timeout": "30s",
+  "sandbox_mode": "process",
+  "trust_level": "system",
+  "keywords": ["homeassistant", "ha", "smart home", "fallback", "integration"],
+  "tags": ["integration", "smart-home", "fallback"]
+}
