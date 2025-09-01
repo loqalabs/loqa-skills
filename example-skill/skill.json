@@ -1,0 +1,81 @@
+{
+  "id": "com.loqalabs.example",
+  "name": "Example Skill",
+  "version": "1.0.0",
+  "description": "An example skill demonstrating the Loqa plugin architecture",
+  "author": "Loqa Labs",
+  "license": "AGPL-3.0",
+  "homepage": "https://github.com/loqalabs/loqa-skills",
+  "repository": "https://github.com/loqalabs/loqa-skills.git",
+  "intent_patterns": [
+    {
+      "name": "greeting",
+      "examples": [
+        "hello",
+        "hi there",
+        "good morning",
+        "hey loqa"
+      ],
+      "min_confidence": 0.7,
+      "priority": 1,
+      "enabled": true,
+      "categories": ["social"],
+      "languages": ["en"]
+    },
+    {
+      "name": "goodbye",
+      "examples": [
+        "goodbye",
+        "bye",
+        "see you later",
+        "farewell"
+      ],
+      "min_confidence": 0.7,
+      "priority": 1,
+      "enabled": true,
+      "categories": ["social"],
+      "languages": ["en"]
+    }
+  ],
+  "languages": ["en"],
+  "categories": ["social", "example"],
+  "permissions": [
+    {
+      "type": "speaker",
+      "resource": "*",
+      "actions": ["play"],
+      "description": "Required to provide audio responses"
+    }
+  ],
+  "dependencies": [],
+  "min_loqa_version": "0.1.0",
+  "config_schema": {
+    "properties": {
+      "greeting_message": {
+        "type": "string",
+        "description": "Custom greeting message",
+        "default": "Hello there!",
+        "format": "text"
+      },
+      "enable_personality": {
+        "type": "boolean",
+        "description": "Enable personality in responses",
+        "default": true
+      },
+      "response_delay": {
+        "type": "number",
+        "description": "Delay before responding (seconds)",
+        "default": 0.5,
+        "format": "float"
+      }
+    },
+    "required": []
+  },
+  "load_on_startup": true,
+  "singleton": true,
+  "timeout": "30s",
+  "sandbox_mode": "process",
+  "trust_level": "system",
+  "keywords": ["example", "demo", "greeting"],
+  "tags": ["built-in", "social"]
+}
