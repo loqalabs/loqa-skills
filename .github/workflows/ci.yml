@@ -55,7 +55,7 @@ jobs:
 
     - name: Set up Go (if Go skill)
       if: hashFiles(format('{0}/go.mod', matrix.skill)) != ''
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         go-version: '1.24.3'
 
