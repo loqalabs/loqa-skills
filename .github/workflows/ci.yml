@@ -128,6 +128,7 @@ jobs:
     - name: Build and push Docker image
       if: hashFiles(format('{0}/Dockerfile', matrix.skill)) != ''
       uses: docker/build-push-action@v6
+      id: build
       with:
         context: ./${{ matrix.skill }}
         platforms: linux/amd64,linux/arm64
@@ -136,6 +137,37 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+        sbom: true
+        provenance: true
+
+    - name: Generate SBOM
+      if: hashFiles(format('{0}/Dockerfile', matrix.skill)) != ''
+      uses: anchore/sbom-action@v0
+      with:
+        image: ${{ env.REGISTRY }}/loqalabs/skill-${{ matrix.skill }}:${{ github.sha }}
+        format: spdx-json
+        output-file: sbom-${{ matrix.skill }}.spdx.json
+
+    - name: Upload SBOM
+      if: hashFiles(format('{0}/Dockerfile', matrix.skill)) != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: sbom-skill-${{ matrix.skill }}
+        path: sbom-${{ matrix.skill }}.spdx.json
+
+    - name: Scan container image
+      if: hashFiles(format('{0}/Dockerfile', matrix.skill)) != ''
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ${{ env.REGISTRY }}/loqalabs/skill-${{ matrix.skill }}:${{ github.sha }}
+        format: 'sarif'
+        output: 'container-scan-${{ matrix.skill }}-results.sarif'
+
+    - name: Upload container scan results
+      if: always() && hashFiles(format('{0}/Dockerfile', matrix.skill)) != ''
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: 'container-scan-${{ matrix.skill }}-results.sarif'
 
   documentation:
     name: Generate Skills Documentation
@@ -185,7 +217,7 @@ jobs:
         echo "Skills will be automatically tested and built when added."
 
   security:
-    name: Security Scan
+    name: Security Analysis
     runs-on: ubuntu-latest
     
     permissions:
@@ -196,6 +228,30 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: go
+
+    - name: Set up Go
+      uses: actions/setup-go@v6
+      with:
+        go-version: '1.23.0'
+
+    - name: Build Go skills for CodeQL
+      run: |
+        for skill in */; do
+          if [ -f "$skill/go.mod" ]; then
+            echo "Building Go skill: $skill"
+            cd "$skill"
+            go build -v ./... || echo "Build failed for $skill, continuing..."
+            cd ..
+          fi
+        done
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
 
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
