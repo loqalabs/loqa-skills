@@ -1,0 +1,24 @@
+version: 2
+updates:
+  # GitHub Actions (main monitoring needed)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "annabarnes1138"
+    assignees:
+      - "annabarnes1138"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
+
+  # Note: Individual skills may have their own dependencies
+  # This configuration focuses on the main repository infrastructure
+  # Skills with specific package managers should have their own dependabot config
