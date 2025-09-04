@@ -11,6 +11,11 @@ on:
 env:
   REGISTRY: docker.io
 
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 jobs:
   discover-skills:
     name: Discover Skills
