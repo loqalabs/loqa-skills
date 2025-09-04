@@ -72,7 +72,7 @@ jobs:
 
     - name: Set up Python (if Python skill)
       if: hashFiles(format('{0}/requirements.txt', matrix.skill)) != '' || hashFiles(format('{0}/pyproject.toml', matrix.skill)) != ''
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         python-version: '3.11'
 
