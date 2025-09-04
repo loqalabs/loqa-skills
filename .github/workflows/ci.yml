@@ -20,7 +20,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Discover skills directories
       id: discover
@@ -44,7 +44,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Validate skill manifest
       run: |
@@ -55,7 +55,7 @@ jobs:
 
     - name: Set up Go (if Go skill)
       if: hashFiles(format('{0}/go.mod', matrix.skill)) != ''
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         go-version: '1.24.3'
 
@@ -72,7 +72,7 @@ jobs:
 
     - name: Set up Python (if Python skill)
       if: hashFiles(format('{0}/requirements.txt', matrix.skill)) != '' || hashFiles(format('{0}/pyproject.toml', matrix.skill)) != ''
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         python-version: '3.11'
 
@@ -98,7 +98,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -122,7 +122,7 @@ jobs:
 
     - name: Build and push Docker image
       if: hashFiles(format('{0}/Dockerfile', matrix.skill)) != ''
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: ./${{ matrix.skill }}
         platforms: linux/amd64,linux/arm64
@@ -140,7 +140,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Generate skill registry
       run: |
@@ -190,7 +190,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
