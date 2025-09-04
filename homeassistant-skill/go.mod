@@ -1,6 +1,6 @@
 module github.com/loqalabs/loqa-skills/homeassistant-skill
 
-go 1.24
+go 1.23.0
 
 require (
 	github.com/loqalabs/loqa-hub v0.0.0-00010101000000-000000000000
@@ -9,6 +9,4 @@ require (
 
 replace github.com/loqalabs/loqa-hub => ../../loqa-hub
 
-require (
-	go.uber.org/multierr v1.10.0 // indirect
-)
+require go.uber.org/multierr v1.10.0 // indirect
