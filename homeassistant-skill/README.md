@@ -5,7 +5,7 @@ A Loqa skill that integrates with Home Assistant Voice Preview Edition, allowing
 ## Features
 
 - **Local Voice Processing**: All STT happens on your Loqa hub for privacy
-- **Multi-device Support**: Handle voice commands from multiple Loqa pucks
+- **Multi-device Support**: Handle voice commands from multiple Loqa relay devices
 - **Fallback Integration**: Forwards unhandled commands to Home Assistant
 - **Full Observability**: Track all voice interactions in the Loqa timeline
 - **Easy Configuration**: Simple setup with HA access token
@@ -168,7 +168,7 @@ make logs
 curl -X POST http://localhost:3000/api/voice-events \
   -H "Content-Type: application/json" \
   -d '{
-    "puck_id": "test-puck",
+    "relay_id": "test-relay",
     "transcription": "turn on the lights",
     "intent": "lighting_control"
   }'
