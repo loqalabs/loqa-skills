@@ -7,7 +7,7 @@ This guide explains how to set up Loqa as a Home Assistant Voice Preview Edition
 Loqa's Home Assistant integration provides:
 
 - **Local Speech-to-Text**: Voice processing happens on your local Loqa hub
-- **Multi-device Support**: Connect multiple voice pucks throughout your home
+- **Multi-device Support**: Connect multiple voice relay devices throughout your home
 - **Fallback Integration**: Forward unhandled commands to Home Assistant
 - **Full Observability**: Track all voice interactions in the Loqa timeline
 - **Simple Setup**: Works with existing HA Voice Preview Edition setup
@@ -15,7 +15,7 @@ Loqa's Home Assistant integration provides:
 ## Architecture
 
 ```
-Voice Puck → Loqa Hub → [Local STT] → [Skills System] → Home Assistant
+Voice Relay → Loqa Hub → [Local STT] → [Skills System] → Home Assistant
      ↓              ↓                       ↓                ↓
   Audio Stream   Process Audio        Route Commands    Execute Actions
                                          ↓
@@ -34,7 +34,7 @@ Voice Puck → Loqa Hub → [Local STT] → [Skills System] → Home Assistant
 ### Loqa Requirements
 
 1. **Loqa Hub** running with skills system enabled
-2. **Voice Pucks** configured and connected
+2. **Voice Relays** configured and connected
 3. Network connectivity between Loqa hub and Home Assistant
 
 ## Setup Instructions
@@ -134,7 +134,7 @@ curl -H "Authorization: Bearer your-long-lived-access-token" \
    ```
 
 2. **Test Voice Command**:
-   - Say "Hey Loqa, turn on the living room lights" to your voice puck
+   - Say "Hey Loqa, turn on the living room lights" to your voice relay
    - Check the Loqa Observer timeline at `http://your-loqa-hub:5173`
    - Verify the command was forwarded to Home Assistant
 
@@ -296,7 +296,7 @@ curl -X POST http://your-loqa-hub:3000/api/skills \
 
 1. **Local Processing**: Most voice processing happens on Loqa, reducing HA load
 2. **Caching**: Consider caching HA state locally for faster responses  
-3. **Parallel Processing**: Multiple pucks can send commands simultaneously
+3. **Parallel Processing**: Multiple relay devices can send commands simultaneously
 4. **Timeout Tuning**: Adjust timeouts based on your network and HA performance
 
 ## Integration with Other Skills

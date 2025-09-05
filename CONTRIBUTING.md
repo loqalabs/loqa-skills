@@ -24,7 +24,7 @@ You don’t need to be an expert in AI or embedded systems to help. Here are jus
 - Submit it for inclusion in the Loqa Skill Registry (coming soon!)
 
 ### 🔌 Hardware Integrations
-- ESP32 puck firmware
+- ESP32 relay firmware
 - Microphone testing
 - Wake word optimization
 
