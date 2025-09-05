@@ -56,7 +56,23 @@ jobs:
         if [ -f "${{ matrix.skill }}/skill.yml" ]; then
           echo "Validating skill manifest for ${{ matrix.skill }}"
           # Add YAML validation here
+        else
+          echo "No skill.yml found for ${{ matrix.skill }}"
         fi
+
+  test-skills:
+    name: Test Skills
+    runs-on: ubuntu-latest
+    needs: validate-skills
+    if: fromJson(needs.discover-skills.outputs.skills)[0] != null
+    
+    strategy:
+      matrix:
+        skill: ${{ fromJson(needs.discover-skills.outputs.skills) }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
 
     - name: Set up Go (if Go skill)
       if: hashFiles(format('{0}/go.mod', matrix.skill)) != ''
@@ -91,7 +107,7 @@ jobs:
   build-skill-images:
     name: Build Skill Docker Images
     runs-on: ubuntu-latest
-    needs: [discover-skills, validate-skills]
+    needs: [discover-skills, test-skills]
     if: fromJson(needs.discover-skills.outputs.skills)[0] != null && github.event_name != 'pull_request'
     
     permissions:
