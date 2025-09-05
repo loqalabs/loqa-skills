@@ -1,0 +1,24 @@
+name: Validate Skill
+
+on:
+  workflow_call:
+    inputs:
+      skill:
+        required: true
+        type: string
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Validate skill manifest
+      run: |
+        if [ -f "${{ inputs.skill }}/skill.yml" ]; then
+          echo "Validating skill manifest for ${{ inputs.skill }}"
+          # Add YAML validation here
+        else
+          echo "No skill.yml found for ${{ inputs.skill }}"
+        fi

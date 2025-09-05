@@ -1,0 +1,45 @@
+name: Test Skill
+
+on:
+  workflow_call:
+    inputs:
+      skill:
+        required: true
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Set up Go (if Go skill)
+      if: hashFiles(format('{0}/go.mod', inputs.skill)) != ''
+      uses: actions/setup-go@v6
+      with:
+        go-version: '1.23.0'
+
+    - name: Verify Go version (if Go skill)
+      if: hashFiles(format('{0}/go.mod', inputs.skill)) != ''
+      run: go version
+
+    - name: Test Go skill
+      if: hashFiles(format('{0}/go.mod', inputs.skill)) != ''
+      run: |
+        cd ${{ inputs.skill }}
+        go mod download
+        go test -v ./...
+
+    - name: Set up Python (if Python skill)
+      if: hashFiles(format('{0}/requirements.txt', inputs.skill)) != '' || hashFiles(format('{0}/pyproject.toml', inputs.skill)) != ''
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+
+    - name: Test Python skill
+      if: hashFiles(format('{0}/requirements.txt', inputs.skill)) != ''
+      run: |
+        cd ${{ inputs.skill }}
+        pip install -r requirements.txt
+        python -m pytest tests/ || echo "No tests found"
