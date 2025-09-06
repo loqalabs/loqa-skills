@@ -19,7 +19,7 @@ Voice Relay → Loqa Hub → [Local STT] → [Skills System] → Home Assistant
      ↓              ↓                       ↓                ↓
   Audio Stream   Process Audio        Route Commands    Execute Actions
                                          ↓
-                                   [Loqa Observer UI]
+                                   [Loqa Commander UI]
 ```
 
 ## Prerequisites
@@ -135,7 +135,7 @@ curl -H "Authorization: Bearer your-long-lived-access-token" \
 
 2. **Test Voice Command**:
    - Say "Hey Loqa, turn on the living room lights" to your voice relay
-   - Check the Loqa Observer timeline at `http://your-loqa-hub:5173`
+   - Check the Loqa Commander timeline at `http://your-loqa-hub:5173`
    - Verify the command was forwarded to Home Assistant
 
 3. **Verify Home Assistant Logs**:
