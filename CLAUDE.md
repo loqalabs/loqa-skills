@@ -464,4 +464,3 @@ make deploy REPO_URL=https://skills.loqalabs.com
 - **Master Documentation**: `../loqa/config/CLAUDE.md` - Full ecosystem overview
 - **Hub Integration**: `../loqa-hub/CLAUDE.md` - Skills management and execution
 - **Protocol Definitions**: `../loqa-proto/CLAUDE.md` - Skills communication protocols
-- **Device Integration**: `../loqa-device-service/CLAUDE.md` - Device control from skills
