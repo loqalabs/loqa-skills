@@ -37,11 +37,20 @@
     "testing": "Include appropriate test coverage for changes"
   },
   "repository_context": {
-    "structure": "loqalabs/ contains multiple individual git repositories",
-    "cross_repo_workflow": {
-      "simple_changes": "Make directly to main branch of supporting repos",
-      "complex_changes": "Create matching feature branches across affected repos",
-      "merge_order": "Supporting repos first, primary repo last"
+    "service_role": "Skills and capabilities system - contains plugins and extensions for Loqa functionality",
+    "service_type": "Plugin system and skills framework (Go)",
+    "dependencies": ["loqa-proto"],
+    "used_by": ["loqa-hub"],
+    "microservice_architecture": {
+      "structure": "Part of loqalabs/ microservice ecosystem - each subfolder is an independent git repository",
+      "peer_services_location": "../ (one folder up from current repo)",
+      "check_before_cloning": "Always check if ../SERVICE_NAME exists before attempting to clone repositories",
+      "skills_role": "Provides extensible capability system for voice commands and AI features",
+      "cross_service_changes": {
+        "simple_changes": "Make directly to main branch of supporting repos (proto, configs)",
+        "complex_changes": "Create matching feature branches across affected repos",
+        "merge_order": "Supporting repos first (proto), skills system, then core services (hub)"
+      }
     }
   },
   "best_practices": [
