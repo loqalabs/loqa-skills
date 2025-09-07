@@ -25,8 +25,9 @@ go.work.sum
 vendor/
 node_modules/
 
-# IDE files (VSCode configs are shared)
+# IDE files
 .idea/
+.vscode/
 *.swp
 *.swo
 *~
