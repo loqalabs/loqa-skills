@@ -1,0 +1,21 @@
+{
+    "recommendations": [
+        // Go development for skill plugins
+        "golang.go",
+        
+        // YAML for skill manifests and configurations
+        "redhat.vscode-yaml",
+        
+        // JSON for skill manifests
+        "ms-vscode.vscode-json",
+        
+        // Git integration
+        "eamodio.gitlens",
+        
+        // Docker for skill containerization
+        "ms-azuretools.vscode-docker",
+        
+        // General productivity
+        "christian-kohler.path-intellisense"
+    ]
+}

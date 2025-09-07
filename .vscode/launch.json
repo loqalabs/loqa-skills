@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Home Assistant Skill",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/homeassistant-skill",
+            "env": {
+                "LOG_LEVEL": "debug",
+                "HASS_URL": "http://localhost:8123",
+                "HASS_TOKEN": "${env:HASS_TOKEN}"
+            },
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Test Home Assistant Skill",
+            "type": "go",
+            "request": "launch",
+            "mode": "test",
+            "program": "${workspaceFolder}/homeassistant-skill",
+            "env": {
+                "LOG_LEVEL": "debug"
+            },
+            "console": "integratedTerminal"
+        }
+    ]
+}
