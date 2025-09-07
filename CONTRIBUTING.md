@@ -19,7 +19,7 @@ You don’t need to be an expert in AI or embedded systems to help. Here are jus
 - Help organize technical content
 
 ### 🧠 New Skills
-- Add a new skill to the `device-service`
+- Create skills that integrate with smart home platforms like Home Assistant
 - Interface with real-world APIs or devices
 - Submit it for inclusion in the Loqa Skill Registry (coming soon!)
 
