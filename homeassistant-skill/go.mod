@@ -1,6 +1,6 @@
 module github.com/loqalabs/loqa-skills/homeassistant-skill
 
-go 1.23.0
+go 1.25.1
 
 require (
 	github.com/loqalabs/loqa-hub v0.0.0-00010101000000-000000000000
