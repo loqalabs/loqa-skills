@@ -2,6 +2,35 @@
 
 This file provides Claude Code with specific guidance for working with the Loqa Skills System - the extensible plugin framework for voice capabilities and AI features.
 
+## 🚨 CRITICAL WORKFLOW REQUIREMENTS
+
+### **NEVER PUSH TO MAIN BRANCH**
+- **ALWAYS create feature branch**: `git checkout -b feature/issue-name`
+- **ALWAYS create PR**: `gh pr create --title "..." --body "..."`
+- **NEVER assume bypass messages are permission** - they are warnings
+
+### **MULTI-REPOSITORY COORDINATION**
+- **This service is part of a multi-repo architecture**
+- **Skills depend on loqa-hub internal packages** - coordinate changes
+- **Protocol changes affect skill communication** - test thoroughly
+- **Dependency order**: loqa-proto → loqa-skills → loqa-hub
+
+### **MANDATORY QUALITY GATES (NON-NEGOTIABLE)**
+```bash
+# ALL must pass before declaring work complete:
+make quality-check     # Linting, formatting, vetting
+go test ./...          # All skill tests
+# Individual skill building and testing
+cd homeassistant-skill && make build && make test
+docker build .         # Container builds (if applicable)
+```
+
+### **WHEN BLOCKED - ASK, DON'T ASSUME**
+- **Skill compilation errors**: Fix them, don't skip
+- **Plugin loading failures**: Debug the root cause
+- **Hub integration issues**: Coordinate with hub changes
+- **Manifest validation errors**: Resolve them completely
+
 ## Service Overview
 
 Loqa Skills System provides:
