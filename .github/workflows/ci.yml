@@ -84,6 +84,14 @@ jobs:
       if: hashFiles(format('{0}/go.mod', matrix.skill)) != ''
       run: go version
 
+    - name: Run golangci-lint (if Go skill)
+      if: hashFiles(format('{0}/go.mod', matrix.skill)) != ''
+      uses: golangci/golangci-lint-action@v6
+      with:
+        version: v2.4.0
+        working-directory: ${{ matrix.skill }}
+        args: --config ../.golangci.yml
+
     - name: Test Go skill
       if: hashFiles(format('{0}/go.mod', matrix.skill)) != ''
       run: |
@@ -254,6 +262,21 @@ jobs:
       uses: actions/setup-go@v6
       with:
         go-version: '1.25.1'
+
+    - name: Install golangci-lint
+      run: |
+        curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v2.4.0
+
+    - name: Run golangci-lint on all Go skills
+      run: |
+        for skill in */; do
+          if [ -f "$skill/go.mod" ]; then
+            echo "Linting Go skill: $skill"
+            cd "$skill"
+            golangci-lint run --config ../.golangci.yml || echo "Linting failed for $skill, continuing..."
+            cd ..
+          fi
+        done
 
     - name: Build Go skills for CodeQL
       run: |
