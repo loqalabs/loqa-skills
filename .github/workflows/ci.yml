@@ -1,4 +1,4 @@
-name: Skills CI/CD Pipeline
+name: CI/CD
 
 on:
   push:
