@@ -80,4 +80,5 @@ yarn-error.log*
 docker-compose.override.yml
 
 # Local config overrides
-config.local.yml
+config.local.yml.claude-code.json
+CLAUDE.md

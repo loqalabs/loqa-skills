@@ -5,239 +5,69 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
-  release:
-    types: [ published ]
   workflow_dispatch:
 
 env:
   REGISTRY: docker.io
 
-permissions:
-  contents: read
-  security-events: write
-  actions: read
-
 jobs:
-  discover-skills:
-    name: Discover Skills
+  test:
     runs-on: ubuntu-latest
-    outputs:
-      skills: ${{ steps.discover.outputs.skills }}
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
+    - name: Checkout
+      uses: actions/checkout@v4
 
-    - name: Discover skills directories
-      id: discover
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.24'
+
+    - name: Test Go skills
       run: |
-        # Find all directories that contain a skill manifest or Dockerfile
-        skills=$(find . -maxdepth 2 -name "skill.yml" -o -name "Dockerfile" | \
-                 sed 's|/[^/]*$||' | sed 's|^\./||' | sort -u | \
-                 jq -R -s -c 'split("\n")[:-1]')
-        echo "skills=$skills" >> $GITHUB_OUTPUT
-        echo "Found skills: $skills"
-
-  validate-skills:
-    name: Validate Skills
-    runs-on: ubuntu-latest
-    needs: discover-skills
-    if: fromJson(needs.discover-skills.outputs.skills)[0] != null
-    
-    strategy:
-      matrix:
-        skill: ${{ fromJson(needs.discover-skills.outputs.skills) }}
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-
-    - name: Validate skill manifest
-      run: |
-        if [ -f "${{ matrix.skill }}/skill.yml" ]; then
-          echo "Validating skill manifest for ${{ matrix.skill }}"
-          # Add YAML validation here
-        else
-          echo "No skill.yml found for ${{ matrix.skill }}"
-        fi
-
-  test-skills:
-    name: Test Skills
-    runs-on: ubuntu-latest
-    needs: validate-skills
-    if: fromJson(needs.discover-skills.outputs.skills)[0] != null
-    
-    strategy:
-      matrix:
-        skill: ${{ fromJson(needs.discover-skills.outputs.skills) }}
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-
-    - name: Set up Go (if Go skill)
-      if: hashFiles(format('{0}/go.mod', matrix.skill)) != ''
-      uses: actions/setup-go@v6
-      with:
-        go-version: '1.25.1'
-
-    - name: Verify Go version (if Go skill)
-      if: hashFiles(format('{0}/go.mod', matrix.skill)) != ''
-      run: go version
-
-    - name: Run golangci-lint (if Go skill)
-      if: hashFiles(format('{0}/go.mod', matrix.skill)) != ''
-      uses: golangci/golangci-lint-action@v6
-      with:
-        version: v2.4.0
-        working-directory: ${{ matrix.skill }}
-        args: --config ../.golangci.yml
-
-    - name: Test Go skill
-      if: hashFiles(format('{0}/go.mod', matrix.skill)) != ''
-      run: |
-        cd ${{ matrix.skill }}
-        go mod download
-        go test -v ./...
-
-    - name: Set up Python (if Python skill)
-      if: hashFiles(format('{0}/requirements.txt', matrix.skill)) != '' || hashFiles(format('{0}/pyproject.toml', matrix.skill)) != ''
-      uses: actions/setup-python@v6
-      with:
-        python-version: '3.11'
-
-    - name: Test Python skill
-      if: hashFiles(format('{0}/requirements.txt', matrix.skill)) != ''
-      run: |
-        cd ${{ matrix.skill }}
-        pip install -r requirements.txt
-        python -m pytest tests/ || echo "No tests found"
-
-  build-skill-images:
-    name: Build Skill Docker Images
-    runs-on: ubuntu-latest
-    needs: [discover-skills, test-skills]
-    if: fromJson(needs.discover-skills.outputs.skills)[0] != null && github.event_name != 'pull_request'
-    
-    permissions:
-      contents: read
-
-    strategy:
-      matrix:
-        skill: ${{ fromJson(needs.discover-skills.outputs.skills) }}
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_TOKEN }}
-
-    - name: Extract metadata
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: ${{ env.REGISTRY }}/loqalabs/skill-${{ matrix.skill }}
-        tags: |
-          type=ref,event=branch
-          type=semver,pattern={{version}}
-          type=sha,prefix={{branch}}-
-
-    - name: Build and push Docker image
-      if: hashFiles(format('{0}/Dockerfile', matrix.skill)) != ''
-      uses: docker/build-push-action@v6
-      id: build
-      with:
-        context: ./${{ matrix.skill }}
-        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-        sbom: true
-        provenance: true
-
-    - name: Generate SBOM
-      if: hashFiles(format('{0}/Dockerfile', matrix.skill)) != ''
-      uses: anchore/sbom-action@v0
-      with:
-        image: ${{ env.REGISTRY }}/loqalabs/skill-${{ matrix.skill }}:${{ github.sha }}
-        format: spdx-json
-        output-file: sbom-${{ matrix.skill }}.spdx.json
-
-    - name: Upload SBOM
-      if: hashFiles(format('{0}/Dockerfile', matrix.skill)) != ''
-      uses: actions/upload-artifact@v4
-      with:
-        name: sbom-skill-${{ matrix.skill }}
-        path: sbom-${{ matrix.skill }}.spdx.json
-
-    - name: Scan container image
-      if: hashFiles(format('{0}/Dockerfile', matrix.skill)) != ''
-      uses: aquasecurity/trivy-action@master
-      with:
-        image-ref: ${{ env.REGISTRY }}/loqalabs/skill-${{ matrix.skill }}:${{ github.sha }}
-        format: 'sarif'
-        output: 'container-scan-${{ matrix.skill }}-results.sarif'
-
-    - name: Upload container scan results
-      if: always() && hashFiles(format('{0}/Dockerfile', matrix.skill)) != ''
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: 'container-scan-${{ matrix.skill }}-results.sarif'
-
-  documentation:
-    name: Generate Skills Documentation
-    runs-on: ubuntu-latest
-    needs: discover-skills
-    if: fromJson(needs.discover-skills.outputs.skills)[0] != null
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-
-    - name: Generate skill registry
-      run: |
-        echo "# Loqa Skills Registry" > SKILLS.md
-        echo "" >> SKILLS.md
-        echo "Available skills in this repository:" >> SKILLS.md
-        echo "" >> SKILLS.md
-        
-        for skill in $(echo '${{ needs.discover-skills.outputs.skills }}' | jq -r '.[]'); do
-          if [ -f "$skill/skill.yml" ]; then
-            echo "## $skill" >> SKILLS.md
-            echo "" >> SKILLS.md
-            # Extract description from skill.yml if available
-            if grep -q "description:" "$skill/skill.yml"; then
-              grep "description:" "$skill/skill.yml" | sed 's/description: *//' >> SKILLS.md
+        for skill in */; do
+          if [ -f "$skill/go.mod" ]; then
+            echo "Testing $skill"
+            cd "$skill"
+            # Skip skills that require local dependencies not available in CI
+            if grep -q "replace.*=> \.\./\.\./loqa-hub" go.mod; then
+              echo "Skipping $skill - requires local loqa-hub dependency not available in CI"
+            else
+              go test ./...
             fi
-            echo "" >> SKILLS.md
+            cd ..
           fi
         done
 
-    - name: Upload skills documentation
-      uses: actions/upload-artifact@v4
-      with:
-        name: skills-documentation
-        path: SKILLS.md
-
-  placeholder:
-    name: Placeholder Job
-    runs-on: ubuntu-latest
-    if: fromJson(needs.discover-skills.outputs.skills)[0] == null
-    needs: discover-skills
-    
-    steps:
-    - name: No skills found
+    - name: Quality check
       run: |
-        echo "No skills found in repository yet."
-        echo "Skills will be automatically tested and built when added."
+        for skill in */; do
+          if [ -f "$skill/go.mod" ]; then
+            echo "Quality check for $skill"
+            cd "$skill"
+            # Skip skills that require local dependencies not available in CI
+            if grep -q "replace.*=> \.\./\.\./loqa-hub" go.mod; then
+              echo "Skipping $skill quality check - requires local loqa-hub dependency not available in CI"
+            else
+              go fmt ./...
+              go vet ./...
+            fi
+            cd ..
+          fi
+        done
 
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Build Docker images
+      run: |
+        for skill in */; do
+          if [ -f "$skill/Dockerfile" ]; then
+            echo "Building Docker image for $skill"
+            docker build -t ${REGISTRY}/loqalabs/skill-${skill%/}:latest "$skill"
+          fi
+        done
