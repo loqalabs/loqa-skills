@@ -45,7 +45,7 @@ Loqa Skills implements a comprehensive plugin architecture introduced in Milesto
 
 - 🏠 **Smart Home Integration**: Ready-to-use Home Assistant connectivity
 - 🎵 **Media Control**: Music and audio playbook management
-- ⏰ **Productivity**: Timers, reminders, and task management
+- ⏰ **Productivity**: Timers, reminders, and issue management
 - 🛠️ **Development Framework**: Tools and templates for custom skills
 - 📦 **Easy Deployment**: Containerized skills with Docker support
 

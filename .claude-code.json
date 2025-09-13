@@ -1,120 +1,23 @@
 {
-  "rules": [
-    "🚨 BLOCKING: NEVER push directly to main branch - ALWAYS create feature branches",
-    "🚨 BLOCKING: ALWAYS create PRs for review - even for simple changes",
-    "🚨 BLOCKING: ALL quality checks must PASS - make quality-check is NON-NEGOTIABLE",
-    "🚨 BLOCKING: ALL tests must PASS - go test ./... must succeed completely",
-    "🚨 BLOCKING: Individual skill builds must SUCCEED - test each skill separately",
-    "🚨 BLOCKING: Hub integration must WORK - skills depend on hub internal packages",
-    "🚨 BLOCKING: When blocked, ASK - never assume or work around errors",
-    "🚨 MULTI-REPO: This depends on loqa-hub internal packages - coordinate changes",
-    "🚨 MULTI-REPO: Peer services are in ../loqa-* directories - understand dependencies",
-    "NEVER use AI attribution in commit messages (no 'Generated with Claude Code' or Co-Authored-By lines)",
-    "Always read existing files before making changes",
-    "Prefer editing existing files over creating new ones when possible",
-    "Use TodoWrite tool to track progress on complex tasks",
-    "Follow established git workflow and branch naming conventions",
-    "Reference issue numbers in commits when applicable",
-    "Update ALL affected documentation proactively without being asked",
-    "Test that changes don't break existing functionality",
-    "Maintain backward compatibility where possible",
-    "Fix all unused variables and ensure error messages start with lowercase letters",
-    "Run 'make lint-fix' to auto-fix formatting issues before manual fixes",
-    "When adding labels to GitHub issues: First check existing labels with 'gh label list', look for semantically similar labels, use existing ones when possible, only create new labels when genuinely needed"
-  ],
-  "documentation_checklist": [
-    "README.md files (main and service-specific)",
-    "Architecture documentation",
-    "Configuration guides and environment variables", 
-    "CLAUDE.md (commands, services, ports, workflows)",
-    "Getting started guides if user experience changes",
-    "Docker compose comments for new services"
-  ],
-  "commit_guidelines": {
-    "never_include": [
-      "Generated with Claude Code",
-      "Co-Authored-By: Claude",
-      "🤖 Generated with",
-      "AI attribution"
-    ],
-    "always_include": [
-      "Reference to issue numbers when applicable",
-      "Clear description of what changed and why"
-    ]
+  "service_context": {
+    "name": "loqa-skills",
+    "type": "go-plugin-system",
+    "role": "Modular skill plugin system with manifest-driven architecture",
+    "dependencies": ["loqa-proto", "loqa-hub"],
+    "affects": ["loqa-hub"]
   },
-  "workflow_principles": {
-    "scope_boundaries": "Ask for clarification when scope is unclear",
-    "technical_approach": "Propose options when multiple paths exist", 
-    "dependencies": "Stop and ask when blockers are found",
-    "testing": {
-      "coverage_requirements": "Maintain high test coverage for all code changes",
-      "unit_tests": "Write unit tests for all new functions, methods, and business logic",
-      "plugin_testing": "Test skill plugins, capabilities, and AI integrations", 
-      "edge_cases": "Test error conditions, boundary values, and failure scenarios",
-      "regression_tests": "Add tests that prevent reoccurrence of fixed bugs",
-      "test_before_commit": "Run existing tests before committing to ensure no breakage",
-      "skill_framework_testing": "Test extensible capability system and plugin loading",
-      "voice_command_testing": "Test voice command processing and AI feature integration"
-    }
+  "quality_commands": {
+    "quality_check": "make quality-check",
+    "dev": "make dev",
+    "build": "make build",
+    "test": "make test"
   },
-  "repository_context": {
-    "service_role": "Skills and capabilities system - contains plugins and extensions for Loqa functionality",
-    "service_type": "Plugin system and skills framework (Go)",
-    "dependencies": ["loqa-proto"],
-    "used_by": ["loqa-hub"],
-    "microservice_architecture": {
-      "structure": "Part of loqalabs/ microservice ecosystem - each subfolder is an independent git repository",
-      "peer_services_location": "../ (one folder up from current repo)",
-      "check_before_cloning": "Always check if ../SERVICE_NAME exists before attempting to clone repositories",
-      "skills_role": "Provides extensible capability system for voice commands and AI features",
-      "cross_service_changes": {
-        "simple_changes": "Make directly to main branch of supporting repos (proto, configs)",
-        "complex_changes": "Create matching feature branches across affected repos",
-        "merge_order": "Supporting repos first (proto), skills system, then core services (hub)"
-      }
-    }
-  },
-  "github_issue_management": {
-    "tagging_workflow": {
-      "step_1": "Always run 'gh label list' first to see existing labels",
-      "step_2": "Look for semantically similar labels (e.g., 'dependencies' instead of 'deps', 'type: feature' instead of 'feature')",
-      "step_3": "Use existing labels when they match the intent, even if wording is slightly different",
-      "step_4": "Only create new labels when no existing label captures the concept",
-      "step_5": "When creating new labels, follow existing naming patterns (e.g., 'area:', 'type:', 'priority:')"
-    },
-    "label_categories": {
-      "type": ["type: bug", "type: feature", "type: chore", "type: improvement"],
-      "priority": ["priority: high", "priority: medium", "priority: low"],
-      "area": ["area: backend", "area: frontend", "area: docs", "area: infrastructure"],
-      "milestone": ["p1-mvp", "p2-high-impact", "p3-future"],
-      "component": ["skills", "dashboard", "stt", "tts", "llm", "relay", "mac-mini"]
-    },
-    "common_substitutions": {
-      "deps": "dependencies",
-      "feat": "type: feature",
-      "bug": "type: bug",
-      "docs": "area: docs",
-      "ui": "area: frontend",
-      "api": "area: backend",
-      "critical": "priority: high",
-      "urgent": "priority: high",
-      "low": "priority: low"
-    }
-  },
-  "best_practices": [
-    "Preserve privacy-first design principles",
-    "Maintain microservice architecture benefits", 
-    "Keep changes focused and atomic",
-    "Update cross-repository references consistently",
-    "Use consistent tagging and categorization",
-    "Make changes easy to find and understand later"
-  ],
-  "avoid": [
-    "Making changes without understanding current state",
-    "Breaking existing functionality unnecessarily",
-    "Creating new files when editing existing ones works",
-    "Rushing implementation without proper planning",
-    "Ignoring dependencies between repositories",
-    "Over-analyzing ideas that just need to be captured"
+  "service_specific_rules": [
+    "🚨 BLOCKING: Each skill must have a valid skill.json manifest",
+    "🚨 CRITICAL: Skills must implement the SkillPlugin interface from loqa-proto",
+    "🚨 CRITICAL: Test skill loading via skills-cli before committing",
+    "Skills are Go plugins compiled as .so files - require Go build for testing",
+    "Individual skills in subdirectories with independent Makefiles",
+    "Skills must be loaded into hub via API or CLI for activation"
   ]
 }
