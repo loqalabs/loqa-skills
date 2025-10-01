@@ -34,6 +34,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 Individual skills may have their own licenses. The repository structure and documentation are licensed under the MIT License.
 
-## About Ambiware Labs
+## About Loqa Labs
 
-Loqa is developed by [Ambiware Labs](https://ambiware.ai), building the future of local-first ambient intelligence.
+Loqa is developed by [Loqa Labs](https://ambiware.ai), building the future of local-first ambient intelligence.
