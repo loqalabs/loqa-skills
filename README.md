@@ -1,5 +1,9 @@
 # Loqa Skills
 
+> **Status**: Paused during Phase 1 (Meetings MVP). Will be used in Phase 2 for chat assistant skills.
+>
+> **Current focus**: [loqa-meetings](https://github.com/loqalabs/loqa-meetings)
+
 Community skill templates and curated examples for the Loqa ambient intelligence platform.
 
 ## Overview
@@ -15,20 +19,25 @@ This repository contains a collection of skills, plugins, and integrations for L
 - **Developer Tools**: Code assistance, documentation lookup
 - **Custom Skills**: User-contributed skills and templates
 
+## Status
+
+**Paused** - The skills runtime in [loqa-core](https://github.com/loqalabs/loqa-core) works, but active skill development is paused while we build the meetings MVP.
+
+**Planned Phase 2**: Chat assistant skills (search vault, summarize notes, etc.)
+
 ## Getting Started
 
-*Coming soon - skill development guide in progress*
+*Skill development guide on hold during Phase 1. Will resume in Phase 2.*
+
+## Related Projects
+
+- **[loqa-core](https://github.com/loqalabs/loqa-core)** - Skills runtime lives here
+- **[loqa-meetings](https://github.com/loqalabs/loqa-meetings)** - Current development focus (Week 1 of 10)
+- **[loqa-meta](https://github.com/loqalabs/loqa-meta)** - Roadmap and architecture docs
 
 ## Contributing a Skill
 
-We welcome community contributions! To submit a skill:
-
-1. Fork this repository
-2. Create your skill following the template structure
-3. Add documentation and examples
-4. Submit a pull request
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+Contribution guidelines will be available after Phase 1 MVP ships. For now, focus is on building the meeting transcription foundation.
 
 ## License
 
